@@ -285,6 +285,14 @@ function action(actionToDispatch) {
   });
 }
 
+function clearTimeoutCmd(timerId) {
+  return Cmd.run(clearTimeout, { args: [timerId] });
+}
+
+function clearIntervalCmd(timerId) {
+  return Cmd.run(clearInterval, { args: [timerId] });
+}
+
 function setTimeoutCmd(nestedCmd, delayMs, options = {}) {
   return delay(nestedCmd, delayMs, options, false);
 }
@@ -423,6 +431,8 @@ export default {
   action,
   setTimeout: setTimeoutCmd,
   setInterval: setIntervalCmd,
+  clearTimeout: clearTimeoutCmd,
+  clearInterval: clearIntervalCmd,
   list,
   map,
   none,

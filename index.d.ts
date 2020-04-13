@@ -109,6 +109,8 @@ export namespace Cmd {
   export function action<A extends Action>(action: A): ActionCmd<A>;
   export function batch<A extends Action>(cmds: CmdType<A>[]): BatchCmd<A>;
   export function sequence<A extends Action>(cmds: CmdType<A>[]): SequenceCmd<A>;
+  export function clearTimeout(timerId: number): RunCmd<never>;
+  export function clearInterval(timerId: number): RunCmd<never>;
 
   export function setTimeout<A extends Action>(
     cmd: CmdType<A>,

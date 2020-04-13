@@ -72,8 +72,10 @@ const todosReducer: LoopReducer<TodoState, TodoActions> = (
         Cmd.list([
           Cmd.none,
           Cmd.action(noop()),
-          Cmd.schedule(Cmd.none, 100, noop),
-          Cmd.scheduleRepeating(Cmd.none, 100, noop),
+          Cmd.setTimeout(Cmd.none, 100, { scheduledActionCreator: noop }),
+          Cmd.setInterval(Cmd.none, 100, { scheduledActionCreator: noop }),
+          Cmd.clearTimeout(1),
+          Cmd.clearInterval(1),
         ])
       );
     case 'NOOP':

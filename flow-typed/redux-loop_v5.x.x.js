@@ -102,8 +102,8 @@ declare module "redux-loop" {
   declare function Cmd$action<A>(action: A): ActionCmd<A>;
   declare function Cmd$batch<A>(cmds: CmdType<A>[]): BatchCmd<A>;
   declare function Cmd$sequence<A>(cmds: CmdType<A>[]): SequenceCmd<A>;
-  declare function Cmd$clearTimeout(timerId: number): RunCmd<empty>;
-  declare function Cmd$clearInterval(timerId: number): RunCmd<empty>;
+  declare function Cmd$clearTimeout(timerId: number): RunCmd<any, void, number>;
+  declare function Cmd$clearInterval(timerId: number): RunCmd<any, void, number>;
 
   declare function Cmd$setTimeout<A>(
     cmd: CmdType<A>,

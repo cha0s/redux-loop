@@ -49,13 +49,13 @@ export interface ActionCmd<A extends Action> {
   simulate(): A;
 }
 
-export interface ScheduledCmd<A extends Action> {
-  readonly type: 'SCHEDULED';
+export interface DelayCmd<A extends Action> {
+  readonly type: 'DELAY';
   readonly nestedCmd: CmdType<A>;
   readonly delayMs: number;
   readonly isRepeating: boolean;
-  readonly onScheduledActionCreator?: ActionCreator<A>;
-  simulate(simulations?: CmdSimulation | MultiCmdSimulation): A[] | A | null
+  readonly scheduledActionCreator?: ActionCreator<A>;
+  simulate(timerId: number, nestedSimulation?: CmdSimulation | MultiCmdSimulation): A[] | A | null
 }
 
 export interface MapCmd<A extends Action> {
@@ -83,7 +83,7 @@ export type BatchCmd<A extends Action> = ListCmd<A>;
 
 export type CmdType<A extends Action> =
   | ActionCmd<A>
-  | ScheduledCmd<A>
+  | DelayCmd<A>
   | ListCmd<A>
   | MapCmd<A>
   | NoneCmd
@@ -110,17 +110,21 @@ export namespace Cmd {
   export function batch<A extends Action>(cmds: CmdType<A>[]): BatchCmd<A>;
   export function sequence<A extends Action>(cmds: CmdType<A>[]): SequenceCmd<A>;
 
-  export function schedule<A extends Action>(
+  export function setTimeout<A extends Action>(
     cmd: CmdType<A>,
     delayMs: number,
-    onScheduledActionCreator?: ActionCreator<A>
-  ): ScheduledCmd<A>;
+    options?: {
+      scheduledActionCreator?: ActionCreator<A>
+    },
+  ): DelayCmd<A>;
 
-  export function scheduleRepeating<A extends Action>(
+  export function setInterval<A extends Action>(
     cmd: CmdType<A>,
     delayMs: number,
-    onScheduledActionCreator?: ActionCreator<A>
-  ): ScheduledCmd<A>;
+    options?: {
+      scheduledActionCreator?: ActionCreator<A>
+    },
+  ): DelayCmd<A>;
 
   export function list<A extends Action>(
     cmds: CmdType<A>[],

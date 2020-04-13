@@ -55,13 +55,13 @@ declare module "redux-loop" {
     simulate(): A;
   }
 
-  declare export interface ScheduledCmd<A> {
-    type: "SCHEDULED";
+  declare export interface DelayCmd<A> {
+    type: "DELAY";
     nestedCmd: CmdType<A>;
     delayMs: number;
     isRepeating: boolean;
-    onScheduledActionCreator?: ActionCreator<A, number>;
-    simulate(simulations?: CmdSimulation<any> | MultiCmdSimulation): A[] | A | null;
+    scheduledActionCreator?: ActionCreator<A, number>;
+    simulate(timerId: number, nestedSimulation?: CmdSimulation<any> | MultiCmdSimulation): A[] | A | null;
   }
 
   declare export interface MapCmd<A, B = any, C = any> {
@@ -87,7 +87,7 @@ declare module "redux-loop" {
 
   declare export type CmdType<A, B = any, C = any> =
     | ActionCmd<A>
-    | ScheduledCmd<A>
+    | DelayCmd<A>
     | ListCmd<A>
     | MapCmd<A>
     | NoneCmd
@@ -103,17 +103,21 @@ declare module "redux-loop" {
   declare function Cmd$batch<A>(cmds: CmdType<A>[]): BatchCmd<A>;
   declare function Cmd$sequence<A>(cmds: CmdType<A>[]): SequenceCmd<A>;
 
-  declare function Cmd$schedule<A>(
+  declare function Cmd$setTimeout<A>(
     cmd: CmdType<A>,
     delayMs: number,
-    onScheduledActionCreator?: ActionCreator<A, number>
-  ): ScheduledCmd<A>;
+    options?: {
+      scheduledActionCreator?: ActionCreator<A, number>,
+    },
+  ): DelayCmd<A>;
 
-  declare function Cmd$scheduleRepeating<A>(
+  declare function Cmd$setInterval<A>(
     cmd: CmdType<A>,
     delayMs: number,
-    onScheduledActionCreator?: ActionCreator<A, number>
-  ): ScheduledCmd<A>;
+    options?: {
+      scheduledActionCreator?: ActionCreator<A, number>,
+    },
+  ): DelayCmd<A>;
 
   declare function Cmd$list<A>(
     cmds: CmdType<A>[],
@@ -160,8 +164,8 @@ declare module "redux-loop" {
 
   declare export var Cmd: {
     action: typeof Cmd$action,
-    schedule: typeof Cmd$schedule,
-    scheduleRepeating: typeof Cmd$scheduleRepeating,
+    setTimeout: typeof Cmd$setTimeout,
+    setInterval: typeof Cmd$setInterval,
     batch: typeof Cmd$batch,
     sequence: typeof Cmd$sequence,
     list: typeof Cmd$list,

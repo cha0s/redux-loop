@@ -146,8 +146,7 @@ function handleSequenceList(
 }
 
 function handleDelayCmd(cmd, dispatch, getState, loopConfig) {
-  const setIntervalOrTimeout = cmd.isRepeating ? setInterval : setTimeout;
-  const handle = setIntervalOrTimeout(() => {
+  const executeNestedCmd = () => {
     const cmdPromise = executeCmd(
       cmd.nestedCmd,
       dispatch,
@@ -159,10 +158,17 @@ function handleDelayCmd(cmd, dispatch, getState, loopConfig) {
         actions.forEach(action => dispatch(action));
       });
     }
-  }, cmd.delayMs);
+  };
+
+  let timerId;
+  if (cmd.isRepeating) {
+    timerId = setInterval(executeNestedCmd, cmd.delayMs);
+  } else {
+    timerId = setTimeout(executeNestedCmd, cmd.delayMs);
+  }
 
   if (cmd.scheduledActionCreator) {
-    return Promise.resolve([cmd.scheduledActionCreator(handle)]);
+    return Promise.resolve([cmd.scheduledActionCreator(timerId)]);
   } else {
     return null;
   }

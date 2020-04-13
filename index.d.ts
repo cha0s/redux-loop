@@ -54,7 +54,7 @@ export interface DelayCmd<A extends Action> {
   readonly nestedCmd: CmdType<A>;
   readonly delayMs: number;
   readonly isRepeating: boolean;
-  readonly scheduledActionCreator?: ActionCreator<A>;
+  readonly scheduledActionCreator?: (timerId: number) => A;
   simulate(timerId: number, nestedSimulation?: CmdSimulation | MultiCmdSimulation): A[] | A | null
 }
 
@@ -114,7 +114,7 @@ export namespace Cmd {
     cmd: CmdType<A>,
     delayMs: number,
     options?: {
-      scheduledActionCreator?: ActionCreator<A>
+      scheduledActionCreator?: (timerId: number) => A;
     },
   ): DelayCmd<A>;
 
@@ -122,7 +122,7 @@ export namespace Cmd {
     cmd: CmdType<A>,
     delayMs: number,
     options?: {
-      scheduledActionCreator?: ActionCreator<A>
+      scheduledActionCreator?: (timerId: number) => A;
     },
   ): DelayCmd<A>;
 

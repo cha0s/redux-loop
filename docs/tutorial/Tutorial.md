@@ -72,7 +72,7 @@ function reducer(state = initialState, action) {
   case 'USER_FETCH_SUCCESSFUL':
     return {...state, user: action.user};
 
-  case 'USER_FETCH_FAILED':
+  case 'USER_FETCH_ERROR':
     return {...state, error: action.error};
 
   default:
